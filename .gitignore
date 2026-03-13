@@ -1,0 +1,13 @@
+#Python cache
+*.pyc
+
+#database
+*.db
+*.db-journal
+
+# Environment files
+.env
+
+# PyCharm files
+.idea/
+__pycache__/
