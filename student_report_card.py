@@ -21,7 +21,7 @@ def get_name():
 
 def get_student_id():
     while True:
-        student_id = input("Enter Student ID: ")
+        student_id = input("Enter Student Identity: ")
 
         if " " in student_id:
             print("Spaces are not allowed in the register number")
