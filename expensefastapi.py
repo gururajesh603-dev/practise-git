@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from db_setup import create_table
+from models import Expense
 from crud import create_expense, get_expenses, update_expense, delete_expense
 
 app = FastAPI()
@@ -13,13 +14,13 @@ def home():
 
 
 @app.post("/expenses")
-def add_expense(title: str, amount: float, category: str):
-    create_expense(title, amount, category)
+def add_expense(expense: Expense):
+    create_expense(expense.title, expense.amount, expense.category)
     return {"message": "Expense added successfully"}
 
 @app.put("/expenses/{expense_id}")
-def edit_expense(expense_id: int, title: str, amount: float, category: str):
-    update_expense(expense_id, title, amount, category)
+def edit_expense(expense_id: int, expense: Expense):
+    update_expense(expense_id, expense.title, expense.amount, expense.category)
     return {"message": "Expense updated successfully"}
 
 @app.delete("/expenses/{expense_id}")
