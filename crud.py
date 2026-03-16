@@ -1,26 +1,38 @@
-import sqlite3
-conn = sqlite3.connect("expenses.db")
-cursor = conn.cursor()
-# CREATE
-cursor.execute(
-    "INSERT INTO expenses (title, amount, category) VALUES (?, ?, ?)",
-    ("Lunch", 200, "Food")
-)
-# READ
-cursor.execute("SELECT * FROM expenses")
-rows = cursor.fetchall()
-print("Expenses:")
-for row in rows:
-    print(row)
-# UPDATE
-cursor.execute(
-    "UPDATE expenses SET amount = ? WHERE id = ?",
-    (250, 1)
-)
-# DELETE
-cursor.execute(
-    "DELETE FROM expenses WHERE id = ?",
-    (2,)
-)
-conn.commit()
-conn.close()
+from db_setup import get_connection
+def create_expense(title, amount, category):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO expenses (title, amount, category) VALUES (?, ?, ?)",
+        (title, amount, category)
+    )
+    conn.commit()
+    conn.close()
+def update_expense(expense_id, title, amount, category):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "UPDATE expenses SET title=?, amount=?, category=? WHERE id=?",
+            (title, amount, category, expense_id)
+        )
+
+        conn.commit()
+        conn.close()
+def delete_expense(expense_id):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("DELETE FROM expenses WHERE id=?", (expense_id,))
+
+        conn.commit()
+        conn.close()
+def get_expenses():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM expenses")
+    rows = cursor.fetchall()
+
+    conn.close()
+    return rows

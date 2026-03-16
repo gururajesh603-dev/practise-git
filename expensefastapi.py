@@ -1,27 +1,33 @@
 from fastapi import FastAPI
+from db_setup import create_table
+from crud import create_expense, get_expenses, update_expense, delete_expense
+
 app = FastAPI()
-# sample data
-expenses = [
-    {"id": 1, "title": "Lunch", "amount": 200, "category": "Food"},
-    {"id": 2, "title": "Bus", "amount": 50, "category": "Travel"},
-    {"id": 3, "title": "Movie", "amount": 300, "category": "Entertainment"}
-]
-# 1. List expenses
+
+create_table()
+
+
+@app.get("/")
+def home():
+    return {"message": "Expense Tracker API Running"}
+
+
+@app.post("/expenses")
+def add_expense(title: str, amount: float, category: str):
+    create_expense(title, amount, category)
+    return {"message": "Expense added successfully"}
+
+@app.put("/expenses/{expense_id}")
+def edit_expense(expense_id: int, title: str, amount: float, category: str):
+    update_expense(expense_id, title, amount, category)
+    return {"message": "Expense updated successfully"}
+
+@app.delete("/expenses/{expense_id}")
+def remove_expense(expense_id: int):
+    delete_expense(expense_id)
+    return {"message": "Expense deleted successfully"}
+
 @app.get("/expenses")
 def list_expenses():
-    return expenses
-# 2. Total spent
-@app.get("/expenses/total")
-def total_spent():
-    total = sum(e["amount"] for e in expenses)
-    return {"total_spent": total}
-# 3. Highest expense
-@app.get("/expenses/highest")
-def highest_expense():
-    highest = max(expenses, key=lambda x: x["amount"])
-    return highest
-# 4. Category filter
-@app.get("/expenses/category/{category}")
-def filter_category(category: str):
-    result = [e for e in expenses if e["category"] == category]
-    return result
+    expenses = get_expenses()
+    return {"expenses": [dict(exp) for exp in expenses]}
